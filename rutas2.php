@@ -1,6 +1,9 @@
 <?php
-function obtener_todo() {
+header('Content-Type: text/html; charset=UTF-8');
 
+function obtener_todo($origen, $destino) {
+
+	$a_resultado = array();
 	$nombre_archivo = 'rutas.csv';
 
 	$gestor_archivo = fopen($nombre_archivo, 'r');
@@ -21,8 +24,8 @@ function obtener_todo() {
 		}
 
 		$numero_de_renglon += 1;
-    }
-
+    
+}
     $ciclos_que_llevo = 0;
     $ya_termine = False;
     $por_donde_voy = $origen;
@@ -30,6 +33,7 @@ function obtener_todo() {
     while ($ya_termine ===False) {
     	if(isset($ciudades[$por_donde_voy]['destino'])){
     		$distancia_que_llevo += $ciudades[$por_donde_voy]['distancia'];
+    		$tiempo_que_llevo += $ciudades[$por_donde_voy]['tiempo'];
     		$por_donde_voy = $ciudades[$por_donde_voy]['destino'];
     	}else {
     		echo("$por_donde_voy no se encontró");
@@ -44,23 +48,32 @@ function obtener_todo() {
 
     // Convertir los enteros con decimales
 	$valor_entero_distancia = intval($distancia_que_llevo, 0);
+	$valor_entero_tiempo = round($tiempo_que_llevo, 0);
+	$valor_fraccional_tiempo = $tiempo_que_llevo - $valor_entero_tiempo;
+	$minutos = round($valor_fraccional_tiempo * 60, 0);
+
 	//return($valor_entero);
+	$a_resultado['distancia'] = $valor_entero_distancia;
+	$a_resultado['tiempo'] = $valor_entero_tiempo . ',' . $minutos;
+	var_dump($a_resultado);
+	return $a_resultado;
+
 
 }
 
 function obtener_distancia_ruta($origen, $destino) {
 	
-    $resultado = obtener_todo();
-     return($resultado['distancia']);
+    $resultado = obtener_todo($origen, $destino);
+     return $resultado['distancia'];
 
 }
 
 function obtener_tiempo_ruta($origen, $destino) {
-	$resultado = obtener_todo();
+	$resultado = obtener_todo($origen, $destino);
 	return($resultado['tiempo']);
 }
 
-/*
+
 // Prueba 1
 $respuesta = obtener_tiempo_ruta('El Paso', 'Torreón');
 
@@ -69,9 +82,9 @@ if ($respuesta === '10,10') {
 } else {
 	echo('La prueba 1 no pasa');
 }
-*/
+
 // Prueba 2
-$respuesta = obtener_distancia_ruta('El Paso', 'Torreon');
+$respuesta = obtener_distancia_ruta('El Paso', 'Torreón');
 
 
 if ($respuesta === intval('887.6')) {
