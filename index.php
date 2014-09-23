@@ -1,32 +1,72 @@
 <?php  
 
-	function ruta_origen($origen, $destino){
+	function ruta_tiempo($origen, $destino){
+
 		$tabla = array() ;
 		$tabla = leer_ruta();
+		$fin_ruta = false;
+		$inicio = 0;
 		$anotar_destino = 0;
+		$tiempo = 0;
 		$ciclos = 0;
+		$tmp_origen=$origen;
 
-		while ( $anotar_destino === $destino) {
-			
+		while ( $fin_ruta !== true ) {
+
 			for ($i=1; $i < count($tabla); $i++) { 
-				for ($j=0; $j < count($tabla[$i]); $j++) { 
-					print_r($tabla[$i][$j]);
-				}
-				if($anotar_destino === $destino || ciclos > 100){
-					$destino = True;
-				}
-					$ciclos +1;
-				//$tabla = explode(",", $tabla[$origen][$destino]);
+					$inicio = $tabla[$i][0];
+					if ($inicio === $tmp_origen && $tabla[$i][1] !== $destino){
+						$tmp_origen = $tabla[$i][1];
+						$anotar_destino = $tabla[$i][1];
+						// sumando el tiempo
+						$tiempo = $tabla[$i][2] + $tiempo;
+					}
 			}
+				if($anotar_destino === $destino || $ciclos > 100){
+					$fin_ruta = true;
+				}
+					$ciclos ++;
 		}
-
-		$valor_entero = round($anotar_destino, o);
-		$valor_fraccional = $anotar_destino - $valor_entero;
-
-		$minutos = round($valor_fraccional * 60, 0);
-		return($valor_entero. ',' . $minutos);
+			 	
+		$valor_entero = $tiempo;
+		return $valor_entero;
 	
 }
+
+	function ruta_distancia($origen, $destino){
+	
+		$tabla = array() ;
+		$tabla = leer_ruta();
+		$fin_ruta = false;
+		$inicio = 0;
+		$anotar_destino = 0;
+		$distancia = 0;
+		$ciclos = 0;
+		$tmp_origen=$origen;
+
+		while ( $fin_ruta !== true ) {
+
+			for ($i=1; $i < count($tabla); $i++) { 
+					$inicio = $tabla[$i][0];
+					if ($inicio === $tmp_origen && $tabla[$i][1] !== $destino){
+						$tmp_origen = $tabla[$i][1];
+						$anotar_destino = $tabla[$i][1];
+
+						// sumando el distancia
+						$distancia = $tabla[$i][3] + $distancia;
+					}
+			}
+				if($anotar_destino === $destino || $ciclos > 100){
+					$fin_ruta = true;
+				}
+					$ciclos ++;
+		}
+			 	
+		$valor_entero = $distancia;
+		return($valor_entero);
+		var_dump($valor_entero);
+
+	}
 
     // Función de tabla dinamica que lee el archivo csv
 	function leer_ruta($ruta = 'rutas.csv'){
@@ -51,14 +91,25 @@
 	}
 
 	// Variable utilizada para prueba
-	$respuesta = ruta_origen('El Paso', 'Torreón');
+	$respuesta = ruta_tiempo('El Paso', 'Torreon');
 
 	// Ciclo que compara la respuesta
-	if ($respuesta === '10,10') {
+	if ($respuesta === 10.16) {
 		echo('La prueba 1 pasa');
+		var_dump($respuesta);
 		} else {
 		echo('La prueba 1 no pasa');
 	}
+
+	$respuesta = ruta_distancia('El Paso', 'Torreon');
+	// Ciclo que compara la distancia
+	if ($respuesta === 887.58) {
+		echo "La prueba 2 pasa";
+		var_dump($respuesta);
+	}else{
+		echo "La prueba 2 no pasa";
+	}
+
 
 
 ?>
